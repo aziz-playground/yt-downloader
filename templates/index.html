@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube Downloader | Aziz</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>MP3/MP4 Downloader</h1>
+            <p>Download your favorite videos or extract audio in one click!</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <label for="url">Video URL:</label>
+            <input type="text" name="url" id="url" placeholder="Paste your video link here..." required>
+
+            <label>Download as:</label>
+            <div class="radio-group">
+                <label><input type="radio" name="download_type" value="mp4" checked> MP4 (Video)</label>
+                <label><input type="radio" name="download_type" value="mp3"> MP3 (Audio)</label>
+            </div>
+
+            <button type="submit">Download</button>
+        </form>
+
+        {% if not processing_done and request.method == 'POST' %}
+            <p style="margin-top: 20px; font-weight: bold;">Processing your file, please wait...</p>
+        {% endif %}
+
+        {% if processing_done and filename %}
+            <div style="margin-top: 30px; border: 1px solid #ccc; padding: 20px; border-radius: 8px; background-color: #f9f9f9;">
+                {% if thumbnail_url %}
+                    <img src="{{ thumbnail_url }}" alt="Video Thumbnail" style="max-width: 100%; height: auto; border-radius: 4px;">
+                {% endif %}
+                <h3 style="margin-top: 15px;">{{ video_title }}</h3>
+                <ul style="list-style: none; padding-left: 0;">
+                    {% if duration %}
+                        <li><strong>Duration:</strong> {{ duration // 60 }}m {{ duration % 60 }}s</li>
+                    {% endif %}
+                    {% if filesize_mb %}
+                        <li><strong>File Size:</strong> {{ filesize_mb }} MB</li>
+                    {% endif %}
+                </ul>
+                <p style="margin-top: 15px;"><strong>Processing complete.</strong> Your file is ready:</p>
+                <a href="{{ url_for('download_file', filename=filename) }}" class="download-btn" style="display: inline-block; margin-top: 10px;">Click to Download</a>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+            <p>This website was built as a college project in a third-world country and is hosted on a free server. Expect some slowness—I'm not Google, duh!</p>
+
+        <p>Made with ❤️ by Aziz ; © 2025</p>
+    </footer>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
